@@ -2,11 +2,13 @@
   "name": "tidy-prompt",
   "version": "0.0.0",
   "description": "A tidy, unobtrusive, fixed position command prompt",
-  "main": "index.js",
   "scripts": {
     "test": "mocha"
   },
-  "repository": "",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:makeusabrew/tidy-prompt.git"
+  },
   "keywords": [
     "tidy",
     "tidy-prompt",
@@ -17,6 +19,7 @@
   "author": "Nick Payne <nick@kurai.co.uk>",
   "license": "MIT",
   "devDependencies": {
-    "mocha": "~1.11.0"
+    "mocha": "~1.11.0",
+    "grunt": "~0.4.1"
   }
 }
