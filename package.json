@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "description": "A tidy, unobtrusive, fixed position command prompt",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "prepublish": "grunt"
   },
   "repository": {
     "type": "git",
