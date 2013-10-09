@@ -34,11 +34,11 @@ process.stdin.on "data", (char) ->
   switch char
     when "\r"
 
-      emitter.emit 'input', writeLine(currentLine, inPrompt)
+      emitter.emit "input", writeLine(currentLine, inPrompt)
 
     when "\u0003"
       # CTRL+C
-      emitter.emit 'SIGINT'
+      emitter.emit "SIGINT"
 
     when "\u0008", "\x7f"
       # backspace
@@ -65,6 +65,12 @@ module.exports =
   log: writeLine
 
   on: (message, callback) -> emitter.on message, callback
+
+  setPrompt: (_prompt) ->
+    prompt = _prompt
+
+  setInPrompt: (_prompt) ->
+    inPrompt = _prompt
 
   prompt: (line, callback) ->
     writeLine line
