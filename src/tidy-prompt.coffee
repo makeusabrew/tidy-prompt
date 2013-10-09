@@ -34,7 +34,7 @@ process.stdin.on "data", (char) ->
   switch char
     when "\r"
 
-      emitter.emit 'input', writeLine currentLine, inPrompt
+      emitter.emit 'input', writeLine(currentLine, inPrompt)
 
     when "\u0003"
       # CTRL+C
@@ -65,3 +65,7 @@ module.exports =
   log: writeLine
 
   on: (message, callback) -> emitter.on message, callback
+
+  prompt: (line, callback) ->
+    writeLine line
+    emitter.once "input", callback
