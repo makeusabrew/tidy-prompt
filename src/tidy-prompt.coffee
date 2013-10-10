@@ -9,6 +9,7 @@ currentLine = ""
 esc         = "\u001B"
 csi         = "#{esc}["
 emitter     = new EventEmitter
+options     = {}
 
 doPrompt = -> process.stdout.write prompt+currentLine
 
@@ -31,12 +32,18 @@ writeLine = (data, prefix = "") ->
 
   return data
 
-
 process.stdin.on "data", (char) ->
   switch char
     when "\r"
 
-      emitter.emit "input", writeLine(currentLine, inPrompt)
+      if options.trapLine
+        cb = (data) ->
+          currentLine = data
+          writeLine currentLine, inPrompt
+
+        emitter.emit "input", currentLine, cb
+      else
+        emitter.emit "input", writeLine(currentLine, inPrompt)
 
     when "\u0003"
       # CTRL+C
@@ -58,11 +65,13 @@ process.stdin.on "data", (char) ->
       write char
 
 module.exports =
-  start: ->
+  start: (_options = {}) ->
     # hook up stdin
     process.stdin.resume()
     process.stdin.setEncoding "utf8"
     process.stdin.setRawMode true
+
+    options = _options
 
     doPrompt()
 
@@ -81,3 +90,7 @@ module.exports =
   prompt: (line, callback) ->
     writeLine line
     emitter.once "input", callback
+
+  clearLine: ->
+    currentLine = ""
+    process.stdout.write "#{csi}2K#{csi}100D#{prompt}"
