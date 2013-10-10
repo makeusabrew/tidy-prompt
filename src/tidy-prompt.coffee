@@ -6,6 +6,8 @@ EventEmitter = require("events").EventEmitter
 prompt      = "=> "
 inPrompt    = "<= "
 currentLine = ""
+esc         = "\u001B"
+csi         = "#{esc}["
 emitter     = new EventEmitter
 
 doPrompt = -> process.stdout.write prompt+currentLine
@@ -16,7 +18,7 @@ writeLine = (data, prefix = "") ->
   # clear what we've currently got on the last line
   # [2K = clear line
   # [(n)D = move (n) characters left
-  process.stdout.write "\u001B[2K\u001B[100D"
+  process.stdout.write "#{csi}2K#{csi}100D"
 
   # add the data for the new line
   process.stdout.write prefix+data+"\n"
@@ -43,9 +45,13 @@ process.stdin.on "data", (char) ->
     when "\u0008", "\x7f"
       # backspace
       # move one char left (1D), delete from cursor to end of line (0K)
-      process.stdout.write "\u001B[1D\u001B[0K"
+      process.stdout.write "#{csi}1D#{csi}0K"
 
       currentLine = currentLine.substr 0, currentLine.length-1
+
+    when "#{csi}A", "#{csi}B", "#{csi}C", "#{csi}D" then
+      # up, down, forward (right), back (left) arrows
+      # no-op, for now
 
     else
       currentLine += char
