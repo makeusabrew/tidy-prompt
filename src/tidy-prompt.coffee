@@ -32,7 +32,19 @@ writeLine = (data, prefix = "") ->
 
   return data
 
+hasDataListener = false
+emitter.on "newListener", (event, fn) ->
+  if event is "data"
+    throw "Only one data listener allowed" if hasDataListener
+    hasDataListener = true
+
 process.stdin.on "data", (char) ->
+  if hasDataListener
+    emitter.emit "data", char, processChar
+  else
+    processChar char
+
+processChar = (char) ->
   switch char
     when "\r"
 
